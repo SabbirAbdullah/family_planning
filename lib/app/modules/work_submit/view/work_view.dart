@@ -21,19 +21,21 @@ import '../widgets/work_summary.dart';
 class WorkScreen extends StatelessWidget {
   final WorkController controller = Get.put(WorkController());
 
+   WorkScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(title: Text("activities".tr)),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('date'.tr, style: titleTextBlue16),
-              SizedBox(height: 8,),
+              const SizedBox(height: 8,),
               Obx(() => Container(
                 color: Colors.white,
                 child: TextFormField(
@@ -56,15 +58,15 @@ class WorkScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       child: Text(controller.selectedDate.value),
                     )
-                        : Padding(
-                      padding: const EdgeInsets.all(14.0),
+                        : const Padding(
+                      padding: EdgeInsets.all(14.0),
                       child: Text(
                         'তারিখ নির্বাচন করুন',
                         style: grayTitleText14,
                       ),
                     ),
                     suffixIcon: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.calendar_month_outlined,
                         color: AppColors.appColor,
                       ),
@@ -74,15 +76,13 @@ class WorkScreen extends StatelessWidget {
                   ),
                 ),
               )),
-              SizedBox(height: 16,),
+              const SizedBox(height: 16,),
               WorkTypeDropdown(),
               WorkForm(),
-              SizedBox(height: 20,),
-
+              const SizedBox(height: 20,),
 
                CustomButton(text:'summary'.tr,onPressed:(){
                 Get.to(()=> WorkFormSummaryScreen());})
-
 
             ],
           ),
@@ -100,7 +100,7 @@ class WorkTypeDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('work_type'.tr, style: titleTextBlue16),
-        SizedBox(height: 8,),
+        const SizedBox(height: 8,),
         Obx(() {
           return DropdownButtonFormField<int>(
             isExpanded: true,
@@ -119,12 +119,12 @@ class WorkTypeDropdown extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            hint: Text('আইটেম নির্বাচন করুন',style: TextStyle(fontFamily: "AnekBangla") ,),style:grayTitleText14 ,
+            hint: const Text('আইটেম নির্বাচন করুন',style: TextStyle(fontFamily: "AnekBangla") ,),style:grayTitleText14 ,
             value: controller.selectedWorkTypeId.value,
             items: controller.workTypes.map((workType) {
               return DropdownMenuItem<int>(
                 value: workType.workTypeId,
-                child: Text(workType.workType,style: TextStyle(fontFamily: "AnekBangla",color: Colors.black87, fontSize: 16),),
+                child: Text(workType.workType,style: const TextStyle(fontFamily: "AnekBangla",color: Colors.black87, fontSize: 16),),
               );
             }).toList(),
             onChanged: (value) {
@@ -187,7 +187,7 @@ class _WorkFormState extends State<WorkForm> {
             _stopListening(fieldId); // Auto stop when recognition is done
           }
         },
-        listenFor: Duration(seconds: 10),
+        listenFor: const Duration(seconds: 10),
        listenOptions: stt.SpeechListenOptions(cancelOnError: true,partialResults: true),
 
         localeId: 'bn_BD', // for Bangla speech recognition
@@ -223,7 +223,7 @@ class _WorkFormState extends State<WorkForm> {
           } else if (field.fieldType == "location") {
             return buildLocationField(field);
           }
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }).toList(),
       );
     });
@@ -233,9 +233,9 @@ class _WorkFormState extends State<WorkForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text("${field.field}", style: titleTextBlue16),
-        SizedBox(height: 8,),
+        const SizedBox(height: 8,),
         Row(
           children: [
             Expanded(
@@ -254,15 +254,15 @@ class _WorkFormState extends State<WorkForm> {
                 ),
               ),
             ),
-            SizedBox(width: 6,),
+            const SizedBox(width: 6,),
             AvatarGlow(
-              duration: Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 1000),
               animate: _isListeningMap[field.fieldId] == true ? true : false,
               glowColor: AppColors.appColor.withOpacity(0.2),
               child: Container(
-                height: 50,width: 50,
-                decoration: BoxDecoration(color: Colors.white,border: Border.all(color: AppColors.borderColor),
+                height: 50,decoration: BoxDecoration(color: Colors.white,border: Border.all(color: AppColors.borderColor),
                     borderRadius: BorderRadius.circular(10)),
+                width: 50,
                 child: IconButton(
                   icon: Icon(
                     _isListeningMap[field.fieldId] == true ? Icons.mic : Icons.mic_none,
@@ -290,14 +290,14 @@ class _WorkFormState extends State<WorkForm> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text("${field.field}", style: titleTextBlue16),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -311,13 +311,13 @@ class _WorkFormState extends State<WorkForm> {
                         : "Location not available",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               IconButton(
-                icon: Icon(Icons.refresh, color: AppColors.appColor),
+                icon: const Icon(Icons.refresh, color: AppColors.appColor),
                 onPressed: () async {
                   await locationController.getLocation();
                   controller.fieldValues[field.fieldId] = locationController.address.value;
@@ -335,9 +335,9 @@ class _WorkFormState extends State<WorkForm> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text("${field.field}", style: titleTextBlue16),
-          SizedBox(height: 8,),
+          const SizedBox(height: 8,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,7 +363,7 @@ class _WorkFormState extends State<WorkForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text(field.field, style: titleTextBlue16),
         DropdownButtonFormField<String>(
           hint: Text(field.field ,style: grayTitleText14),
@@ -404,7 +404,7 @@ class _WorkFormState extends State<WorkForm> {
       width: MediaQuery.of(context).size.width * 0.5,
       decoration: BoxDecoration(borderRadius:  BorderRadius.circular(12), color: Colors.grey.shade200,),
       child:    GestureDetector(
-        child: Icon(Icons.camera_enhance_outlined, size: 50, color: AppColors.appColor),
+        child: const Icon(Icons.camera_enhance_outlined, size: 50, color: AppColors.appColor),
         onTap: () {
           controller.openCameraAndCrop(field.fieldId);
         },
