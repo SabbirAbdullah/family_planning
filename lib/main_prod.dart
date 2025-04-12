@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+
+import '/app/my_app.dart';
+import '/flavors/build_config.dart';
+import '/flavors/env_config.dart';
+import '/flavors/environment.dart';
+
+//005431
+//5431
+void main() {
+  EnvConfig prodConfig = EnvConfig(
+    appName: "Family Planning",
+    baseUrl: "https://family-planning-server.mpairproject.xyz",
+    shouldCollectCrashLog: true,
+  );
+  BuildConfig.instantiate(
+    envType: Environment.PRODUCTION,
+    envConfig: prodConfig,
+  );
+
+  runApp(const MyApp());
+}
