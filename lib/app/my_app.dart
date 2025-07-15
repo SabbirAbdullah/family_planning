@@ -43,64 +43,67 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    final ProfileController profileController = Get.put(ProfileController());
 
-    return Obx(() {
+    return Obx((){
+      final ProfileController profileController = Get.put(ProfileController());
       Locale currentLocale = profileController.selectedLanguage.value;
+       return GetMaterialApp(
+         title: _envConfig.appName,
+         translations: AppTranslations(),
+         locale: currentLocale,
+         fallbackLocale: const Locale('bn'), // Default to Bangla
+         defaultTransition: Transition.leftToRight,
+         initialBinding: InitialBinding(),
+         initialRoute: AppPages.INITIAL,
+         getPages: AppPages.routes,
+         // home: SplashScreen(),
+         builder: EasyLoading.init(),
+         theme: ThemeData(
+           fontFamily: 'AnekBangla',
+           scaffoldBackgroundColor: AppColors.pageBackground,
+           appBarTheme: const AppBarTheme(
+             centerTitle: true,
+             scrolledUnderElevation: 0,
+             backgroundColor: AppColors.appBarColor,
+             titleTextStyle: TextStyle(
+               color: Colors.white,
+               fontSize: 16,
+               fontWeight: FontWeight.w600,
+             ),
+             iconTheme: IconThemeData(color: Colors.white),
+           ),
+           primarySwatch: AppColors.colorPrimarySwatch,
+           visualDensity: VisualDensity.adaptivePlatformDensity,
+           brightness: Brightness.light,
+           primaryColor: AppColors.colorPrimary,
+           // textTheme: TextTheme(
+           //   bodyLarge: TextStyle(
+           //     fontFamily:'AnekBangla',
+           //     fontSize: 18.0,
+           //   ),
+           //   bodyMedium: TextStyle(
+           //     fontFamily: 'AnekBangla',
+           //     fontSize: 14.0,
+           //   ),
+           //   bodySmall:  TextStyle(
+           //     fontFamily:'AnekBangla',
+           //     fontSize: 12.0,
+           //   ),
+           //   labelLarge: const TextStyle(
+           //     color: Colors.white,
+           //     fontSize: 20.0,
+           //     fontWeight: FontWeight.bold,
+           //     fontFamily: 'AnekBangla'
+           //   ),
+           // ),
+         ),
+         debugShowCheckedModeBanner: false,
+       );
+    }
 
-      return GetMaterialApp(
-        title: _envConfig.appName,
-        translations: AppTranslations(),
-        locale: currentLocale,
-        fallbackLocale: const Locale('bn'), // Default to Bangla
-        defaultTransition: Transition.leftToRight,
-        initialBinding: InitialBinding(),
-        initialRoute: AppPages.INITIAL,
-        getPages: AppPages.routes,
-        // home: SplashScreen(),
-        builder: EasyLoading.init(),
-        theme: ThemeData(
-          fontFamily: 'AnekBangla',
-          scaffoldBackgroundColor: AppColors.pageBackground,
-          appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            scrolledUnderElevation: 0,
-            backgroundColor: AppColors.appBarColor,
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-            iconTheme: IconThemeData(color: Colors.white),
-          ),
-          primarySwatch: AppColors.colorPrimarySwatch,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          brightness: Brightness.light,
-          primaryColor: AppColors.colorPrimary,
-          // textTheme: TextTheme(
-          //   bodyLarge: TextStyle(
-          //     fontFamily:'AnekBangla',
-          //     fontSize: 18.0,
-          //   ),
-          //   bodyMedium: TextStyle(
-          //     fontFamily: 'AnekBangla',
-          //     fontSize: 14.0,
-          //   ),
-          //   bodySmall:  TextStyle(
-          //     fontFamily:'AnekBangla',
-          //     fontSize: 12.0,
-          //   ),
-          //   labelLarge: const TextStyle(
-          //     color: Colors.white,
-          //     fontSize: 20.0,
-          //     fontWeight: FontWeight.bold,
-          //     fontFamily: 'AnekBangla'
-          //   ),
-          // ),
-        ),
-        debugShowCheckedModeBanner: false,
-      );
-    });
+
+    );
+
   }
 }
 

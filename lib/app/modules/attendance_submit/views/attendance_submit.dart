@@ -18,18 +18,17 @@ import '../../home/controllers/home_controller.dart';
 import '../controllers/attendance_controller.dart';
 
 
-class AttendanceSubmit extends StatefulWidget {
-  const AttendanceSubmit({super.key});
+class AttendanceSubmit extends StatelessWidget {
+   AttendanceSubmit({super.key});
 
-  @override
-  State<AttendanceSubmit> createState() => _AttendanceSubmitState();
-}
-
-class _AttendanceSubmitState extends State<AttendanceSubmit> {
   final controller = Get.put(AttendanceController());
+
   final attendanceHistoryController = Get.put(AttendanceHistoryController());
+
   final homeController = Get.put(HomeController());
+
   final LocationController locationController = Get.put(LocationController());
+
   final VoiceController voiceController = Get.put(VoiceController());
 
   @override
@@ -47,11 +46,11 @@ class _AttendanceSubmitState extends State<AttendanceSubmit> {
             const SizedBox(height: 16),
             Text('picture'.tr, style: titleTextBlue16),
             SizedBox(height: 8,),
-          Obx(()=>ImagePickerBox(
-            image: controller.image.value,
-            onTap: controller.pickAndCompressImage,
-          ),),
-
+            Obx(
+                    () => ImagePickerBox(image: controller.image.value, onTap: (){
+                  controller.pickAndCompressImage();
+                })
+            ),
             const SizedBox(height: 16),
             Text('description'.tr, style: titleTextBlue16),
             SizedBox(height: 8,),
@@ -67,9 +66,11 @@ class _AttendanceSubmitState extends State<AttendanceSubmit> {
             const SizedBox(height: 20),
            Obx(()=>  CustomButton(
              isLoading: controller.isLoading.value,
-             onPressed: _submitAttendance,
+             onPressed: controller.addAttendance,
+             snackbarMessage: controller.message.value,
              text: 'submit'.tr,
-           ),)
+           ),),
+
           ],
         ),
       ),
@@ -132,29 +133,25 @@ class _AttendanceSubmitState extends State<AttendanceSubmit> {
       ],
     ));
   }
+}
 
+class TestSnackbarScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Snackbar Test')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Get.rawSnackbar(
+              message: "This is a raw snackbar!",
+              backgroundColor: Colors.blue,
+            );
 
-
-
-
-  void _submitAttendance() {
-    final imageFile = controller.image.value;
-    if (imageFile == null) {
-      Get.snackbar('Error', "Please select an image.");
-      return;
-    }
-
-    final attendance = AttendanceModel(
-      empId: homeController.user.value?.empId ?? '',
-      date: controller.date.value,
-      inTime: controller.inTime.value,
-      type: attendanceHistoryController.attendanceType.value,
-      description: controller.desController.text,
-      location: locationController.address.value,
-      lat: locationController.latitude.value,
-      longi: locationController.longitude.value,
+          },
+          child: Text("Show Snackbar"),
+        ),
+      ),
     );
-
-    controller.addAttendance(attendance, imageFile);
   }
 }

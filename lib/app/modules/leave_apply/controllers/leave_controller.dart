@@ -71,9 +71,9 @@ class LeaveController extends GetxController {
       Get.snackbar(
         "Success",
         "Leave submitted successfully!",
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green,
-        colorText: Colors.white,
+
         duration: const Duration(seconds: 2),
       );
 
@@ -87,7 +87,7 @@ class LeaveController extends GetxController {
       Get.snackbar(
         "Submission Failed",
         e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

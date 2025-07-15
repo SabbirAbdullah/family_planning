@@ -12,7 +12,7 @@ import '../../../core/values/location_map_controller.dart';
 import '../../../core/values/text_styles.dart';
 
 import '../../../data/model/work_type_model.dart';
-import '../controller/controller.dart';
+import '../controller/work_controller.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import '../widgets/work_summary.dart';

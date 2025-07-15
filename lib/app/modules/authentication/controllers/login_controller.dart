@@ -1,4 +1,5 @@
 import 'package:family_planning/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,9 +11,23 @@ class LoginController extends GetxController {
   final HomeController homeController = Get.put(HomeController());
 
 
-
-  RxString token = "".obs;
   var isLoading= false.obs;
+
+
+  final AuthRemoteService _apiService = AuthRemoteService();
+
+  Future <void> login(String empId, String password) async {
+    isLoading(true);
+    try {
+      await _apiService.login(empId, password);
+      await homeController.fetchUser();
+      Get.offAllNamed('/bottom_nav_view');
+    } catch (e) {
+      Get.snackbar('Error', e.toString(),backgroundColor: Colors.white);
+    } finally {
+      isLoading(false);
+    }
+  }
 
   ///login
   // Future<void> login(String empId, String password) async {
@@ -33,22 +48,6 @@ class LoginController extends GetxController {
   //   }
   //
   // }
-
-
-  final AuthRemoteService _apiService = AuthRemoteService();
-
-  Future <void> login(String empId, String password) async {
-    isLoading(true);
-    try {
-      await _apiService.login(empId, password);
-      await homeController.fetchUser();
-      Get.offAllNamed('/bottom_nav_view');
-    } catch (e) {
-      Get.snackbar('Error', e.toString());
-    } finally {
-      isLoading(false);
-    }
-  }
 
 
 

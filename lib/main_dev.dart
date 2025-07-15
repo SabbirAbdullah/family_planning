@@ -18,6 +18,5 @@ void main() {
     envType: Environment.DEVELOPMENT,
     envConfig: devConfig,
   );
-
   runApp(const MyApp());
 }

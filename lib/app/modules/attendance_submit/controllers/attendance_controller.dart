@@ -35,17 +35,12 @@ class AttendanceController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Set the application date to today's date
-
       DateTime now = DateTime.now();
-
-    // date.value = tomorrow.toString().split(" ")[0];
       date.value = now.toString().split(" ")[0];
       inTime.value = "${now.hour}:${now.minute}:${now.second}";
 
     locationController.getLocation();
   }
-
   void pickDateTime() async {
     DateTime? pickedDate = await showDatePicker(
       context: Get.context!,
@@ -65,8 +60,6 @@ class AttendanceController extends GetxController {
     }
   }
 
-
-
   final ImagePicker picker = ImagePicker();
   Rx<XFile?> image = Rx<XFile?>(null);
 
@@ -77,8 +70,60 @@ class AttendanceController extends GetxController {
       image.value = compressedImage;  // Update the image with compressed file
     }
   }
+  void getCurrentLocation() async {
+    lat.value = "${locationController.latitude.value}";
+    longi.value = "${locationController.longitude.value}";
+    location.value = "${locationController.address.value}";
+  }
 
-  // Future<void> _pickImageFromGalleryAndCompress() async {
+  Future<void> addAttendance() async {
+    final imageFile = image.value;
+    if (imageFile == null) {
+      Get.snackbar('Error', "Please select an image.",backgroundColor: Colors.white);
+      return;
+    }
+
+    if (!attendanceHistoryController.isSubmitEnabled.value) {
+      Get.snackbar("Error", "You have already submitted attendance.",backgroundColor: Colors.white);
+      return; // ❌ Prevent submission
+    }
+
+    final attendance = AttendanceModel(
+      empId: homeController.user.value?.empId ?? '',
+      date: date.value,
+      inTime: inTime.value,
+      type: attendanceHistoryController.attendanceType.value,
+      description: desController.text,
+      location: locationController.address.value,
+      lat: locationController.latitude.value,
+      longi: locationController.longitude.value,
+    );
+
+    isLoading.value = true;
+    try {
+      message.value = await _remote.addAttendance(attendance, imageFile);
+      isLoading.value = false;
+      Get.snackbar('Success', message.value, backgroundColor: Colors.white);
+
+
+      // Clear/reset the form
+      desController.clear();
+      attendanceHistoryController.attendanceType.value = "";
+      date.value = "";
+      inTime.value = "";
+      image.value = null;
+      locationController.address.value = "";
+
+      // Refresh attendance history
+      await attendanceHistoryController.fetchAttendance();
+    } catch (e) {
+      message.value = e.toString();
+      isLoading.value = false;
+      Get.snackbar('Error', message.value,backgroundColor: Colors.white);
+    }
+  }
+
+// Future<void> _pickImageFromGalleryAndCompress() async {
   //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
   //   if (pickedFile != null) {
   //     image.value = await compressImage(pickedFile);
@@ -139,41 +184,13 @@ class AttendanceController extends GetxController {
   // Function to pick an image from the camera
 
 
-  void getCurrentLocation() async {
-    lat.value = "${locationController.latitude.value}";
-    longi.value = "${locationController.longitude.value}";
-    location.value = "${locationController.address.value}";
-  }
 
 
 
 
 
-  Future<void> addAttendance(AttendanceModel attendance, XFile? imageFile) async {
-    if (!attendanceHistoryController.isSubmitEnabled.value) {
-      Get.snackbar("Error", "You have already submitted attendance.");
-      return; // ❌ Prevent submission
-    }
-    isLoading.value = true;
-    try {
-      message.value = await _remote.addAttendance(attendance, imageFile);
-      isLoading.value = false;
-      Get.snackbar('Success', message.value);
-      // Fetch updated attendance history
-      // Clear/reset the form
-      desController.clear(); // Clears the text field
-      attendanceHistoryController.attendanceType.value = ""; // Reset selection
-      date.value = ""; // Reset date
-      inTime.value = ""; // Reset time
-      image.value = null; // Reset image
-      locationController.address.value = "";
-      await attendanceHistoryController.fetchAttendance();
-    } catch (e) {
-      message.value = e.toString();
-      isLoading.value = false;
-      Get.snackbar('Error', message.value);
-    }
-  }
+
+
 
 
 

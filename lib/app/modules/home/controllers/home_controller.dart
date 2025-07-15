@@ -9,6 +9,7 @@ import '../../../data/repository/dashboard_repository.dart';
 class HomeController extends GetxController {
 
   final AuthRemoteService _apiService = AuthRemoteService();
+
   Rxn<UserModel> user = Rxn<UserModel>();
 
   var isLoading= false.obs;

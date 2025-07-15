@@ -1,5 +1,6 @@
 import 'package:family_planning/app/core/values/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -11,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final double fontSize;
   final Widget? icon;
   final bool isLoading;
+  final String? snackbarMessage; // <-- new
 
   const CustomButton({
     super.key,
@@ -23,6 +25,7 @@ class CustomButton extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
     this.fontSize = 16.0,
     this.isLoading = false,
+    this.snackbarMessage, // <-- new
   });
 
   @override
@@ -30,7 +33,19 @@ class CustomButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: isLoading
+            ? null
+            : () {
+          onPressed(); // original logic
+          if (snackbarMessage != null && snackbarMessage!.isNotEmpty) {
+            Get.snackbar(
+              "Info", snackbarMessage!,
+              snackPosition: SnackPosition.TOP,
+              backgroundColor: Colors.black87,
+              colorText: Colors.white,
+            );
+          }
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
@@ -71,3 +86,4 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+

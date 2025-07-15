@@ -16,9 +16,12 @@
 
 
     <application
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:label="Family Planning"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
         <activity
 
             android:name=".MainActivity"

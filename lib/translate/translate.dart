@@ -101,7 +101,21 @@ class AppTranslations extends Translations {
       'student_num':'Student Number',
       'prottayon_pic':"Verification Picture",
       'activities':'Activities',
-      'total_activities':'Total Activities'
+      'total_activities':'Total Activities',
+
+      ///month
+  'month_01': 'January',
+  'month_02': 'February',
+  'month_03': 'March',
+  'month_04': 'April',
+  'month_05': 'May',
+  'month_06': 'June',
+  'month_07': 'July',
+  'month_08': 'August',
+  'month_09': 'September',
+  'month_10': 'October',
+  'month_11': 'November',
+  'month_12': 'December',
 
     },
     'bn': {
@@ -202,9 +216,24 @@ class AppTranslations extends Translations {
       'prottayon_pic':'প্রত্যায়নের ছবি',
       'privacy_policy':"প্রাইভেসি পলিসি",
       'conditions': "শর্তাবলী",
-       "guidelines":"নির্দেশিকা"
-      
+       "guidelines":"নির্দেশিকা",
+
+      ///month
+      'month_01': 'জানুয়ারি',
+      'month_02': 'ফেব্রুয়ারি',
+      'month_03': 'মার্চ',
+      'month_04': 'এপ্রিল',
+      'month_05': 'মে',
+      'month_06': 'জুন',
+      'month_07': 'জুলাই',
+      'month_08': 'আগস্ট',
+      'month_09': 'সেপ্টেম্বর',
+      'month_10': 'অক্টোবর',
+      'month_11': 'নভেম্বর',
+      'month_12': 'ডিসেম্বর',
     },
   };
+
+
 }
 

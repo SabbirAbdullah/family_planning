@@ -54,24 +54,6 @@ class ProfileController extends GetxController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  var selectedMethod = ''.obs;
-  final List<String> method = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
-
-  void setSelectedMethod(String value) {
-    selectedMethod.value = value;
-  }
-
     var selectedDate = ''.obs;
 
   void pickDate(BuildContext context) async {

@@ -48,61 +48,50 @@ class WorkApiService {
     }
   }
 
-  Future<List<FetchWorkModel>> fetchWorks(String empId) async {
 
+  Future<List<FetchWorkModel>> fetchWorkHistory({
+    required String empId,
+    String? startDate,
+    String? endDate,
+  }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
     if (token == null) {
       throw Exception('No token found');
     }
-
     try {
+      final Map<String, dynamic> body = {
+        "emp_id": empId,
+      };
+
+      // Only add date filters if they are provided
+      if (startDate != null && endDate != null) {
+        body["startDate"] = startDate;
+        body["endDate"] = endDate;
+      }
+
       final response = await dio.post(
-        "/api/work/get-all-work",
-        data: {'emp_id': empId},
+        '/api/work/get-all-work',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         ),
+        data: body,
       );
 
-      List data = response.data;
-      return data.map((e) => FetchWorkModel.fromJson(e)).toList();
+      if (response.statusCode == 200) {
+        return (response.data as List)
+            .map((item) => FetchWorkModel.fromJson(item))
+            .toList();
+      } else {
+        throw Exception('Failed to fetch work history');
+      }
     } catch (e) {
-      print('Error fetching data: $e');
-      rethrow;
+      throw Exception('API error: $e');
     }
   }
 }
 
-// class WorkApiService {
-//   final Dio _dio = DioProvider.dioWithHeaderToken;
-//
-//   Future<String> submitWorkForm(SubmitWorkForm form) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     String? token = prefs.getString('token');
-//
-//     if (token == null) {
-//       throw Exception('No token found');
-//     }
-//     try {
-//       final response = await _dio.post(
-//         "/api/work/add-work-info",
-//         options: Options(
-//           headers: {"Authorization": "Bearer $token"},),
-//         data: form.toJson(),
-//       );
-//
-//       if (response.statusCode == 200) {
-//         return response.data["message"];
-//       } else {
-//         throw Exception("Failed to submit work form");
-//       }
-//     } catch (e) {
-//       throw Exception("Error submitting work form: $e");
-//     }
-//   }
-// }

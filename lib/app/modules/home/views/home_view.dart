@@ -1,9 +1,13 @@
+import 'package:family_planning/app/core/values/custom_button.dart';
 import 'package:family_planning/app/modules/attendance_list/views/attendance_list_view.dart';
 import 'package:family_planning/app/modules/authentication/controllers/login_controller.dart';
+import 'package:family_planning/app/modules/work_history/controllers/work_history_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../translate/translate.dart';
 import '../../../core/values/app_colors.dart';
 import '../../../core/values/shimmer_loading.dart';
 import '../../../core/values/text_styles.dart';
@@ -14,7 +18,8 @@ import '../../fwa_validation/views/fwa_validation.dart';
 import '../../leave_apply/views/leave_apply_view.dart';
 import '../../notice/view/notice_page.dart';
 
-import '../../work_submit/controller/controller.dart';
+import '../../work_history/views/work_history_view.dart';
+import '../../work_submit/controller/work_controller.dart';
 import '../../work_submit/view/work_view.dart';
 import '../controllers/home_controller.dart';
 
@@ -25,13 +30,29 @@ class HomeView extends StatelessWidget {
   final AttendanceHistoryController attendanceHistoryController =
       Get.put(AttendanceHistoryController());
   final WorkController workController = Get.put(WorkController());
+  final WorkHistoryController workHistoryController =
+  Get.put(WorkHistoryController());
+
 
 
   @override
   Widget build(BuildContext context) {
     // final screenHeight = MediaQuery.of(context).size.height;
     // final screenWidth = MediaQuery.of(context).size.width;
-   controller.fetchDashboard();
+
+
+    String getLocalizedMonthName(String dateStr) {
+      final parts = dateStr.split('-'); // Expects '2025-04'
+      if (parts.length == 2) {
+        final monthKey = 'month_${parts[1]}';
+        return monthKey.tr;
+      }
+      return '';
+    }
+
+    controller.fetchDashboard();
+    workHistoryController.fetchHistory();
+    workHistoryController.updateLatestWork();
     return Scaffold(
         backgroundColor: AppColors.pageBackground,
         appBar: PreferredSize(
@@ -133,7 +154,6 @@ class HomeView extends StatelessWidget {
               color: AppColors.pageBackground,
               child: Column(
                 children: [
-
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -171,11 +191,11 @@ class HomeView extends StatelessWidget {
                               children: [
                                 ///latest_work
                                 Obx(() {
-                                  if (workController.isLoading.value) {
+                                  if (workHistoryController.isLoading.value) {
                                     return  Center(
                                       child: ShimmerWidgets.shimmerCard(height: 60), // Show loader while fetching
                                     );
-                                  } else if (workController.latestWork.value != null) {
+                                  } else if (workHistoryController.latestWork.value != null) {
                                     return  Container(
                                       width: double.infinity,
                                       padding: const EdgeInsets.all(8),
@@ -192,12 +212,12 @@ class HomeView extends StatelessWidget {
                                             height: 8,
                                           ),
                                           Text(
-                                            "${workController.latestWork.value!.workType}",
+                                            "${workHistoryController.latestWork.value!.workType}",
                                             style: titleTextBlue14,
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            workController.latestWork.value!.date!.toLocal().toString().split(' ')[0],
+                                            workHistoryController.latestWork.value!.date!.toLocal().toString().split(' ')[0],
                                             style: titleTextBlue14,
                                           ),
                                           const SizedBox(height: 8),
@@ -373,15 +393,22 @@ class HomeView extends StatelessWidget {
                                             child: Padding(
                                               padding: const EdgeInsets.only(
                                                   right: 8.0, top: 8),
-                                              child: Text(
-                                                "${controller.dashboardData[0].present}",
-                                                style: grayTitleText24,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "${controller.dashboardData[0].present}",
+                                                    style: grayTitleText24,
+                                                  ),
+                                                  Text("${getLocalizedMonthName(controller.dashboardData[0].month)}", style: titleTextBlue16,)
+                                                ],
                                               ),
                                             )),
                                         Text(
-                                          "timely_attendance".tr,
+                                          'timely_attendance'.tr,
                                           style: grayTitleText14_600,
                                         ),
+
                                       ],
                                     ),
                                   );
@@ -418,9 +445,15 @@ class HomeView extends StatelessWidget {
                                             child: Padding(
                                               padding: const EdgeInsets.only(
                                                   right: 8.0, top: 8),
-                                              child: Text(
-                                                '${controller.dashboardData[0].todayLate}',
-                                                style: grayTitleText24,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    '${controller.dashboardData[0].todayLate}',
+                                                    style: grayTitleText24,
+                                                  ),
+                                                  Text("${getLocalizedMonthName(controller.dashboardData[0].month)}", style: titleTextBlue16,)
+                                                ],
                                               ),
                                             )),
                                         Text(
@@ -581,67 +614,63 @@ class HomeView extends StatelessWidget {
                                 // Obx((){
                                 //   return  userTypeController.userType == UserType.FPI
                                 //       ?
-                                controller.user.value!.designation== "FPI"
-                                    ? Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white),
-                                  child: InkWell(
-                                    onTap: () {
-                                      // Get.to(AttendanceVerificationView());
-
-                                      Get.to(()=>FwaValidation());
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "validate_fwa".tr,
-                                          style: titleTextBlue16,
-                                        ),
-                                        const Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            // Padding(
-                                            //   padding: const EdgeInsets.only(right: 8.0),
-                                            //   child: Image.asset("assets/images/image 6.png",height: 50,width: 50,),
-                                            // ),
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor:
-                                                    AppColors.pageBackground,
-                                                child: Text(
-                                                  '৬',
-                                                  style: grayTitleText24,
-                                                ),
-                                              ),
-                                            ),
-                                            Align(
-                                                alignment:
-                                                    Alignment.bottomRight,
-                                                child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(
-                                                          right: 8.0),
-                                                  child: Icon(
-                                                    Icons.arrow_forward,
-                                                    size: 20,color: Colors.grey,
-                                                  ),
-                                                ))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                    : const SizedBox.shrink()
+                                // controller.user.value!.designation== "FPI"
+                                //     ? Container(
+                                //   padding: const EdgeInsets.all(8),
+                                //   decoration: BoxDecoration(
+                                //       borderRadius: BorderRadius.circular(10),
+                                //       color: Colors.white),
+                                //   child: InkWell(
+                                //     onTap: () {
+                                //       // Get.to(AttendanceVerificationView());
+                                //
+                                //       Get.to(()=>FwaValidation());
+                                //     },
+                                //     child: Column(
+                                //       crossAxisAlignment:
+                                //           CrossAxisAlignment.start,
+                                //       mainAxisAlignment:
+                                //           MainAxisAlignment.spaceBetween,
+                                //       children: [
+                                //         Text(
+                                //           "validate_fwa".tr,
+                                //           style: titleTextBlue16,
+                                //         ),
+                                //          Row(
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceBetween,
+                                //           children: [
+                                //             // Padding(
+                                //             //   padding: const EdgeInsets.only(right: 8.0),
+                                //             //   child: Image.asset("assets/images/image 6.png",height: 50,width: 50,),
+                                //             // ),
+                                //             Align(
+                                //               alignment: Alignment.center,
+                                //               // child:Image.asset(
+                                //               //   "assets/images/validation.png",
+                                //               //   height: 35,
+                                //               //   width: 35,
+                                //               // ),
+                                //             ),
+                                //             Align(
+                                //                 alignment:
+                                //                     Alignment.bottomRight,
+                                //                 child: Padding(
+                                //                   padding:
+                                //                       EdgeInsets.only(
+                                //                           right: 8.0),
+                                //                   child: Icon(
+                                //                     Icons.arrow_forward,
+                                //                     size: 20,color: Colors.grey,
+                                //                   ),
+                                //                 ))
+                                //           ],
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // )
+                                //     : const SizedBox.shrink()
                               ],
                             ),
                           ),
@@ -661,7 +690,7 @@ class HomeView extends StatelessWidget {
                                       color: Colors.white),
                                   child: InkWell(
                                     onTap: () {
-                                      workController.fetchAllWork();
+                                    workHistoryController.fetchHistory();
                                       Get.to(() => AttendanceListView());
                                     },
                                     child: Column(
@@ -772,7 +801,62 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   ////////////////////////
+                  controller.user.value!.designation== "FPI"
+                      ? Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white),
+                                            child: InkWell(
+                        onTap: () {
+                          // Get.to(AttendanceVerificationView());
 
+                          Get.to(()=>FwaValidation());
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "validate_fwa".tr,
+                                style: titleTextBlue16,
+                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(right: 8.0),
+                              //   child: Image.asset("assets/images/image 6.png",height: 50,width: 50,),
+                              // ),
+                              Align(
+                                alignment: Alignment.center,
+                                // child:Image.asset(
+                                //   "assets/images/validation.png",
+                                //   height: 35,
+                                //   width: 35,
+                                // ),
+                              ),
+                              Align(
+                                  alignment:
+                                  Alignment.topRight,
+                                  child: Padding(
+                                    padding:
+                                    EdgeInsets.only(
+                                        right: 8.0),
+                                    child: Icon(
+                                      Icons.arrow_forward,
+                                      size: 20,color: Colors.grey,
+                                    ),
+                                  ))
+
+
+                            ],
+                          ),
+                        ),
+                                            ),
+                                          ),
+                      )
+                      : const SizedBox.shrink(),
 
                   //leave_day
                   // DottedBorder(child:Container(),color: AppColors.borderColor,strokeWidth: 1,strokeCap: StrokeCap.butt,),

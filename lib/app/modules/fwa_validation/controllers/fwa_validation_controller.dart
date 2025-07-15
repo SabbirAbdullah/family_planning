@@ -1,5 +1,6 @@
 import 'package:family_planning/app/data/model/fwa_validation_model.dart';
 import 'package:family_planning/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:intl/intl.dart';
@@ -42,7 +43,7 @@ class FwaValidationController extends GetxController {
     isLoading(true);
     try {
       var message = await _repository.updateWorkStatus(workId, status);
-      Get.snackbar("Success", message);
+      Get.snackbar("Success", message,backgroundColor: Colors.white);
       fetchFwaWorkList(); // Refresh list after update
     } catch (e) {
       Get.snackbar("Error", "Failed to update status");

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/values/custom_button.dart';
-import '../controller/controller.dart';
+import '../controller/work_controller.dart';
 
 class WorkFormSummaryScreen extends StatelessWidget {
   final WorkController controller = Get.put(WorkController());
@@ -58,7 +58,7 @@ class WorkFormSummaryScreen extends StatelessWidget {
               isLoading: controller.isLoading.value,
               onPressed: () async {
                 await controller.submitWorkForm();
-
+                Navigator.pop(context);
               },
               text: 'submit'.tr,
             ))

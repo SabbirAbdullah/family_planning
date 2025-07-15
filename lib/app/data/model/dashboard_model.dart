@@ -2,14 +2,16 @@ class DashboardData {
   final int present;
   final int totalWork;
   final int todayLate;
+  final String month;
 
-  DashboardData({required this.present, required this.totalWork, required this.todayLate});
+  DashboardData({required this.present, required this.totalWork, required this.todayLate, required this.month});
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
     return DashboardData(
       present: json['present'] ?? "",
       totalWork: json['totalWork'] ?? "",
       todayLate: json['today_late'] ?? "",
+        month: json['month']?? "",
     );
   }
 }

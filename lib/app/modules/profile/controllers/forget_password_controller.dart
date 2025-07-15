@@ -24,12 +24,10 @@ class ChangePasswordController extends GetxController {
     final confirmPassword = confirmPasswordController.text.trim();
 
     if (newPassword != confirmPassword) {
-      Get.snackbar("Error", "New password and confirm password do not match.");
+      Get.snackbar("Error", "New password and confirm password do not match.", backgroundColor: Colors.white);
       return;
     }
-
     isLoading.value = true;
-
     try {
       final request = ChangePasswordRequest(
         oldPassword: oldPassword,

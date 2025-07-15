@@ -24,7 +24,7 @@ class WorkController extends GetxController {
   @override
   void onInit() {
     fetchWorkTypes();
-    fetchAllWork();
+
     super.onInit();
   }
 
@@ -136,41 +136,30 @@ class WorkController extends GetxController {
     }
   }
   //////////
-  var workList = <FetchWorkModel>[].obs;
 
-  final WorkApiService _apiService = WorkApiService();
+  // Future<void> fetchAllWork() async {
+  //   try {
+  //     isLoading(true);
+  //     var empId = homeController.user.value?.empId; // Avoids force unwrapping
+  //
+  //     if (empId == null) {
+  //       Get.snackbar("Error", "Employee ID is missing");
+  //       return;
+  //     }
+  //
+  //     var works = await _apiService.fetchWorks(empId);
+  //     workList.assignAll(works);
+  //     updateLatestWork();// Ensures reactive update
+  //
+  //   } catch (e) {
+  //     Get.snackbar("Error", "Failed to fetch work data: $e");
+  //     debugPrint("Error fetching work data: $e");
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
 
-  Future<void> fetchAllWork() async {
-    try {
-      isLoading(true);
-      var empId = homeController.user.value?.empId; // Avoids force unwrapping
 
-      if (empId == null) {
-        Get.snackbar("Error", "Employee ID is missing");
-        return;
-      }
-
-      var works = await _apiService.fetchWorks(empId);
-      workList.assignAll(works);
-      updateLatestWork();// Ensures reactive update
-
-    } catch (e) {
-      Get.snackbar("Error", "Failed to fetch work data: $e");
-      debugPrint("Error fetching work data: $e");
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  var latestWork = Rxn<FetchWorkModel>();
-
-  void updateLatestWork()  {
-    if (workList.isNotEmpty) {
-       workList.sort((a, b) => b.date!.compareTo(a.date!)); // Sort descending
-        latestWork.value = workList.first;// Pick the latest
-    print(latestWork.value);
-    }
-  }
 
   final isListening = false.obs;
   final speech = stt.SpeechToText();
