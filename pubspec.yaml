@@ -144,7 +144,6 @@ flutter:
          - asset: assets/fonts/AnekBangla-Regular.ttf
 
 
-
      - family: Roboto
        fonts:
          - asset: assets/fonts/Roboto-Regular.ttf
