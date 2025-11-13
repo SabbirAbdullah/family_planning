@@ -58,9 +58,9 @@
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Ucrop.CropTheme"
-            tools:ignore="MissingClass" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:resizeableActivity="true"
+            android:configChanges="orientation|screenSize"/>
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

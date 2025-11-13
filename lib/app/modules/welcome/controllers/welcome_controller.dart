@@ -7,66 +7,46 @@ import '../../../data/remote/auth_api_service.dart';
 import '../../work_history/controllers/work_history_controller.dart';
 import '../../work_submit/controller/work_controller.dart';
 
-class WelcomeController extends GetxController{
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   // Navigate to HomeView after 2 seconds
-  //   Future.delayed(const Duration(seconds: 2), () {
-  //     Get.off(() => ()); // Replace with your main view
-  //   });
-  // }
-
-  var isConnected = true.obs;
-final HomeController homeController = Get.put(HomeController());
+class WelcomeController extends GetxController {
+  final HomeController homeController = Get.put(HomeController());
   final WorkHistoryController workController = Get.put(WorkHistoryController());
   final AuthRemoteService authRemoteService = AuthRemoteService();
+
   @override
   void onInit() {
     super.onInit();
-    // checkConnectivity();
-    // Connectivity().onConnectivityChanged.listen((status) {
-    //   isConnected.value = (status != ConnectivityResult.none);
-    // });
+    checkLoginStatus();
   }
 
-  // void checkConnectivity() async {
-  //   var connectivityResult = await Connectivity().checkConnectivity();
-  //   isConnected.value = (connectivityResult != ConnectivityResult.none);
-  // }
   Future<void> checkLoginStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    await Future.delayed(const Duration(milliseconds: 1000));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
 
-    if (token != null) {
-      try {
-        // Attempt to fetch user using token
-        await homeController.fetchUser();
+      if (token == null || token.isEmpty) {
+        Get.offAllNamed('/login_view');
+        return;
+      }
 
-        // Optional: Validate if user data is fetched properly
-        if (homeController.user.value != null) {
-          // Proceed to home
-          await homeController.fetchDashboard();
-          await workController.fetchHistory();
+      // Timeout added to avoid infinite hang
+      await homeController.fetchUser().timeout(const Duration(seconds: 5));
 
-          Get.offAllNamed('/bottom_nav_view');
-        } else {
-          // Token exists but no user fetched (invalid/expired)
-          await prefs.remove('token');
-          Get.offAllNamed('/login_view');
-        }
-      } catch (e) {
-        print("Error during auto-login: $e");
+      if (homeController.user.value != null) {
+        await Future.wait([
+          homeController.fetchDashboard(),
+          workController.fetchHistory(),
+        ]);
+        Get.offAllNamed('/bottom_nav_view');
+      } else {
         await prefs.remove('token');
         Get.offAllNamed('/login_view');
       }
-    } else {
-      // No token found — go to login screen
+    } catch (e) {
+      print("❌ Error during splash check: $e");
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
       Get.offAllNamed('/login_view');
     }
   }
-
-
-
-
 }

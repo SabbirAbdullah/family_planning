@@ -9,7 +9,7 @@ import '/flavors/environment.dart';
 void main() {
   EnvConfig prodConfig = EnvConfig(
     appName: "Family Planning",
-    baseUrl: "https://family-planning-server.mpairproject.xyz",
+    baseUrl: "",
     shouldCollectCrashLog: true,
   );
   BuildConfig.instantiate(

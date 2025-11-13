@@ -40,7 +40,7 @@ class LoginView extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Employee ID Field
-            Text("mobile_number".tr, style: grayTitleText14_600),
+            Text("id_number".tr, style: grayTitleText14_600),
             const SizedBox(height: 6),
             _buildInputField(empIdController),
 

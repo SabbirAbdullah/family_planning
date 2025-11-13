@@ -10,7 +10,7 @@ void main() {
 
     EnvConfig devConfig = EnvConfig(
     appName: "Family Planning",
-    baseUrl: "https://family-planning-server.mpairproject.xyz",
+    baseUrl: "",
     shouldCollectCrashLog: true,
   );
 

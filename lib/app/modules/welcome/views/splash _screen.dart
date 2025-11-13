@@ -21,9 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      controller.checkLoginStatus();
-    });
+
     Future.delayed(const Duration(milliseconds: 800), () {
       setState(() {
         _isVisible = true;

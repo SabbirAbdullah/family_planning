@@ -15,6 +15,7 @@ class AppTranslations extends Translations {
       'change_language': 'Change Language',
       'personal_info': 'Personal Information',
       'attendance_history': 'Attendance History',
+      "id_number":"Id Number",
       //profile
       'profile':"Profile",
      'leave_application': 'Leave Application',
@@ -132,6 +133,7 @@ class AppTranslations extends Translations {
       'leave_application': 'ছুটির আবেদন',
       'change_password': 'পাসওয়ার্ড পরিবর্তন',
        'profile':'প্রোফাইল',
+      "id_number":"আইডি নম্বর",
       'logout':'লগ আউট',
       'login':'লগইন করুন',
       'employee_name': 'কর্মীর নাম',

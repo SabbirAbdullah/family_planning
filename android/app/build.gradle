@@ -1,63 +1,100 @@
-//plugins {
-//    id "com.android.application"
-//    id "kotlin-android"
-//    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-//    id "dev.flutter.flutter-gradle-plugin"
-//}
-//
-//android {
-//    namespace = "com.family_planning.app"
-//
-//    ndkVersion = flutter.ndkVersion
-//
-//    compileOptions {
-//        sourceCompatibility = JavaVersion.VERSION_1_8
-//        targetCompatibility = JavaVersion.VERSION_1_8
-//    }
-//
-//    kotlinOptions {
-//        jvmTarget = JavaVersion.VERSION_1_8
-//    }
-//
-//    defaultConfig {
-//        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-//        applicationId = "com.family_planning.app"
-//        // You can update the following values to match your application needs.
-//        // For more information, see: https://flutter.dev/to/review-gradle-config.
-//        minSdkVersion 23
-//        compileSdkVersion 35
-//        targetSdkVersion 35
-//        versionCode = flutter.versionCode
-//        versionName = flutter.versionName
-//    }
-//
-//    buildTypes {
-//        release {
-//            // TODO: Add your own signing config for the release build.
-//            // Signing with the debug keys for now, so `flutter run --release` works.
-//
-//            signingConfig = signingConfigs.debug
-//        }
-//    }
-//}
-//
-//flutter {
-//    source = "../.."
-//}
+
+import java.util.Properties
+import java.io.FileInputStream
+
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // Flutter plugin must be applied last
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def keystorePropertiesFile = rootProject.file("family_planning_key.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace "com.family_planning.app"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    defaultConfig {
+        applicationId "com.family_planning.app"
+        minSdk flutter.minSdkVersion
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+        multiDexEnabled true
+    }
+
+    // 🔥 Product Flavors
+    flavorDimensions "env"
+    productFlavors {
+        dev {
+            dimension "env"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            resValue "string", "app_name", "TestApp Dev"
+        }
+        prod {
+            dimension "env"
+            resValue "string", "app_name", "TestApp"
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
+    implementation "androidx.multidex:multidex:2.0.1"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5"
+}
 
 
-//plugins {
-//    id "com.android.application"
-//    id "kotlin-android"
-//    id "dev.flutter.flutter-gradle-plugin"
-//}
+
 //
-//def localProperties = new Properties()
-//def localPropertiesFile = rootProject.file('local.properties')
-//if (localPropertiesFile.exists()) {
-//    localPropertiesFile.withReader('UTF-8') { reader ->
-//        localProperties.load(reader)
-//    }
+//import java.util.regex.Matcher
+//import java.util.regex.Pattern
+//
+//def localProperties = loadPropertiesFile('local.properties')
+//def keystoreProperties = loadPropertiesFile('family_planning_key.properties')
+//def flutterRoot = localProperties.getProperty('flutter.sdk')
+//if (flutterRoot == null) {
+//    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 //}
 //
 //def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -70,174 +107,108 @@
 //    flutterVersionName = '1.0'
 //}
 //
+//def loadPropertiesFile(String fileName) {
+//    println(fileName)
+//    def properties = new Properties()
+//    def propertiesFile = rootProject.file(fileName)
+//    if (propertiesFile.exists()) {
+//        propertiesFile.withReader('UTF-8') { reader ->
+//            properties.load(reader)
+//        }
+//    }
+//    return properties
+//}
+//
+//def getCurrentFlavor() {
+//    Gradle gradle = getGradle()
+//    String  tskReqStr = gradle.getStartParameter().getTaskRequests().toString()
+//
+//    Pattern pattern
+//    println(tskReqStr)
+//    if( tskReqStr.contains( "assemble" ) )
+//        pattern = Pattern.compile("assemble(\\w+)(Release|Debug)")
+//    else if( tskReqStr.contains("bundle") )
+//        pattern = Pattern.compile("bundle(\\w+)(Release|Debug)")
+//    else
+//        pattern = Pattern.compile("generate(\\w+)(Release|Debug)")
+//
+//    Matcher matcher = pattern.matcher( tskReqStr )
+//
+//    if( matcher.find() )
+//        return matcher.group(1).toLowerCase()
+//    else
+//    {
+//        println "NO MATCH FOUND"
+//        return ""
+//    }
+//}
+//
+//apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+//apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+//
 //android {
-//    namespace "com.alhasanain.school.app"
-//    compileSdkVersion flutter.compileSdkVersion
-//    ndkVersion flutter.ndkVersion
-//
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-//
-//    kotlinOptions {
-//        jvmTarget = '1.8'
-//    }
-//
+//    namespace "com.family_planning.app"
 //    sourceSets {
 //        main.java.srcDirs += 'src/main/kotlin'
 //    }
 //
 //    defaultConfig {
 //        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-//        applicationId "com.alhasanain.school.app"
-//        // You can update the following values to match your application needs.
-//        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-//        minSdkVersion flutter.minSdkVersion
-//        targetSdkVersion flutter.targetSdkVersion
+//        applicationId "com.family_planning.app"
+//        minSdkVersion 26
+//        targetSdkVersion 36
+//        compileSdk 36
 //        versionCode flutterVersionCode.toInteger()
 //        versionName flutterVersionName
 //    }
 //
+//    lintOptions {
+//        checkReleaseBuilds false
+//    }
+//
+//    signingConfigs {
+//        release {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+////            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+//            storeFile file("/Users/mpairappdev/StudioProjects/family_planning/family_key.jks")
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
+//
 //    buildTypes {
 //        release {
-//            // TODO: Add your own signing config for the release build.
-//            // Signing with the debug keys for now, so `flutter run --release` works.
-//            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.release
+//        }
+//    }
+//
+//    flavorDimensions "default"
+//    productFlavors {
+//        dev {
+//            dimension "default"
+//            applicationIdSuffix ".dev"
+//        }
+//        prod {
+////            dimension "default"
 //        }
 //    }
 //}
 //
 //flutter {
 //    source '../..'
+//    target "lib/main_" + getCurrentFlavor() + ".dart"
 //}
 //
-//dependencies {}
-
-
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-def localProperties = loadPropertiesFile('local.properties')
-def keystoreProperties = loadPropertiesFile('family_planning_key.properties')
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-def loadPropertiesFile(String fileName) {
-    println(fileName)
-    def properties = new Properties()
-    def propertiesFile = rootProject.file(fileName)
-    if (propertiesFile.exists()) {
-        propertiesFile.withReader('UTF-8') { reader ->
-            properties.load(reader)
-        }
-    }
-    return properties
-}
-
-def getCurrentFlavor() {
-    Gradle gradle = getGradle()
-    String  tskReqStr = gradle.getStartParameter().getTaskRequests().toString()
-
-    Pattern pattern
-    println(tskReqStr)
-    if( tskReqStr.contains( "assemble" ) )
-        pattern = Pattern.compile("assemble(\\w+)(Release|Debug)")
-    else if( tskReqStr.contains("bundle") )
-        pattern = Pattern.compile("bundle(\\w+)(Release|Debug)")
-    else
-        pattern = Pattern.compile("generate(\\w+)(Release|Debug)")
-
-    Matcher matcher = pattern.matcher( tskReqStr )
-
-    if( matcher.find() )
-        return matcher.group(1).toLowerCase()
-    else
-    {
-        println "NO MATCH FOUND"
-        return ""
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
-android {
-    namespace "com.family_planning.app"
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.family_planning.app"
-        minSdkVersion 23
-        targetSdkVersion 35
-        compileSdk 35
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-    }
-
-    lintOptions {
-        checkReleaseBuilds false
-    }
-
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-//            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storeFile file("C:/Users/SABBIR/StudioProjects/family_planning/family_key.jks")
-            storePassword keystoreProperties['storePassword']
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-        }
-    }
-
-    flavorDimensions "default"
-    productFlavors {
-        dev {
-            dimension "default"
-            applicationIdSuffix ".dev"
-        }
-        prod {
-//            dimension "default"
-        }
-    }
-}
-
-flutter {
-    source '../..'
-    target "lib/main_" + getCurrentFlavor() + ".dart"
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-
-
-
-
-
-
-
-
-
+//dependencies {
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
